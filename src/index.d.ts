@@ -12,7 +12,7 @@ export interface Result {
     };
     __typename: string;
   };
-  titletype: {
+  titleType: {
     text: string;
     id: string;
     isSeries: boolean;
@@ -33,6 +33,14 @@ export interface Result {
     __typename: string;
   };
   releaseDate: string | null;
+  genres: {
+    genres: { text: string; id: string; __typename: string }[];
+  };
+  ratingsSummary: {
+    aggregateRating: number;
+    voteCount: number;
+    __typename: string;
+  };
 }
 
 export interface Response {
@@ -41,3 +49,16 @@ export interface Response {
   entries: number;
   results: Result[];
 }
+export type OptionsType = {
+  method: "GET" | "POST" | "PUT" | "DELETE";
+  headers: {
+    "x-rapidapi-key": string;
+    "x-rapidapi-host": string;
+    [key: string]: string;
+  };
+};
+
+export type GetMoviesProps = {
+  activePage: number;
+  genre?: string;
+};

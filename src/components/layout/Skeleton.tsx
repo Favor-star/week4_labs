@@ -2,7 +2,7 @@ const Skeleton = () => {
   return (
     <div
       className="w-full grid gap-3 p-1 "
-      style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}
+      style={{ gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))" }}
     >
       {Array(10)
         .fill(null)

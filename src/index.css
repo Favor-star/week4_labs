@@ -4,9 +4,13 @@
 *::before,
 *::after {
   box-sizing: border-box;
- 
 }
 @theme {
   --color-primary: #1f282d;
   --color-secondary: #065a60;
+}
+
+.scrollbar_sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.499) #065a6049;
 }
