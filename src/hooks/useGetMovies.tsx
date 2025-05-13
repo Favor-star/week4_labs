@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { type Response, type OptionsType, type GetMoviesProps } from "../index";
+import type {  Response,  OptionsType,  GetMoviesProps } from "../index";
 import { ActiveTab } from "../contexts/GrobalContexts";
 function useGetMovies({
   activePage,
