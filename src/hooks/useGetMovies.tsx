@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { type Response, type OptionsType, type GetMoviesProps } from "../index";
-import { ActiveTab } from "../App";
+import { ActiveTab } from "../contexts/GrobalContexts";
 function useGetMovies({
   activePage,
 }: GetMoviesProps): [boolean, Response | null] {
@@ -20,13 +20,13 @@ function useGetMovies({
             ? `&genre=${genre.activeTab}`
             : ""
         }`;
-        console.log(url);
         const moviesRes = await fetch(url, options);
         const moviesResult: Response = await moviesRes.json();
         setMovies(moviesResult);
         setIsFetching(false);
       } catch (error) {
         console.log(error);
+        setIsFetching(false);
       }
     }
     fetchMovies();

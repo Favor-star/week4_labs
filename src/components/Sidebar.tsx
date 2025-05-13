@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import useGetGenres from "../hooks/useGetGenres";
-import { ActiveTab } from "../App";
+import { ActiveTab } from "../contexts/GrobalContexts";
+import cn from "../utils";
 const Sidebar = () => {
   const genreResult = useGetGenres();
   return (
@@ -28,10 +29,10 @@ const SideBarItem = ({ genre }: { genre: string }) => {
   return (
     <p
       onClick={handleClick}
-      className={
-        "w-full py-2  ps-4 lg:ps-8 hover:text-secondary hover:bg-white transition-all cursor-pointer" +
-        (result?.activeTab === genre ? " bg-white text-secondary" : "")
-      }
+      className={cn(
+        "w-full py-2  ps-4 lg:ps-8 hover:text-secondary hover:bg-white transition-all cursor-pointer",
+        result?.activeTab === genre && " bg-white text-secondary"
+      )}
     >
       {genre}
     </p>

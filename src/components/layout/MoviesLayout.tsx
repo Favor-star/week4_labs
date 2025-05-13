@@ -1,66 +1,58 @@
-import { ChevronLeft, ChevronRight, FilterIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import type { Result } from "../..";
+import { ChevronLeft, ChevronRight, XIcon } from "lucide-react";
+import { useState, useContext } from "react";
+
 import Skeleton from "./Skeleton";
 import MoviesCard from "../MoviesCard";
 import { useGetMovies } from "../../hooks/useGetMovies";
+import { SearchContext } from "../../contexts/GrobalContexts";
+import useSearchMovies from "../../hooks/useSearchMovies";
 
 const MoviesLayout = () => {
   const [activePage, setActivePage] = useState<number>(1);
-  const [isFetching, movies] = useGetMovies({ activePage });
 
-  // const [moviesList, setMoviesList] = useState<Result[] | null>(null);
-  const [filter, setFilter] = useState("All");
-  // console.log(movies);
-  // useEffect(() => {
-  //   if (!movies) return;
-  //   if (filter === "all") {
-  //     console.log(moviesList);
-  //     setMoviesList(movies.results);
-  //   } else if (filter === "episode") {
-  //     setMoviesList([...movies.results.filter((mv) => mv.titleType.isEpisode)]);
-  //   } else if (filter === "tvshows") {
-  //     setMoviesList([...movies.results.filter((mv) => mv.titleType.isSeries)]);
-  //   }
-  // }, [filter]);
+  const { searchTerm, setSearchTerm } = useContext(SearchContext) || {};
+  const shouldSearch = searchTerm?.trim() !== "";
+  const [isFetching, movies] = useGetMovies({ activePage });
+  const searchResults = useSearchMovies(shouldSearch ? searchTerm ?? "" : "");
+  const handleCloseSearch = () => {
+    shouldSearch === false;
+    setSearchTerm && setSearchTerm("");
+  };
   return (
     <div className="w-full text-white py-2 flex flex-col ">
       <div className="flex-1 w-full ">
         <div className="w-full flex flex-row justify-between items-center mb-2">
-          <p className="text-xl font-bold">Trending Movies</p>
-          <span className="w-fit max-w-96 flex rounded-lg border border-white p-2">
-            <FilterIcon className=" w-10" strokeWidth={1} />
-            Filter by:
-            <select
-              name="filter"
-              id="filterOptions"
-              className="bg-white/10 p-1 pe-2 outline-none rounded-sm"
-              onChange={(e) => setFilter(e.target.value)}
+          <p className="text-xl font-bold pb-3">
+            {shouldSearch && searchResults.searchResult?.results.length !== 0
+              ? `Search results for "${searchTerm}"`
+              : "Trending Movies"}
+          </p>
+          {shouldSearch && (
+            <div
+              className="flex flex-row gap-2 p-2 rounded-lg border border-white"
+              onClick={handleCloseSearch}
             >
-              <option value="all" className="text-primary">
-                All
-              </option>
-              <option value="movies" className="text-primary">
-                Movies
-              </option>
-              <option value="tvshows" className="text-primary">
-                Tv Series
-              </option>
-              <option value="episode" className="text-primary">
-                Episode
-              </option>
-            </select>
-          </span>
+              <XIcon />
+              <p className="">Close Search</p>
+            </div>
+          )}
         </div>
-        {/* <Skeleton /> */}
-        {isFetching ? (
-          <Skeleton />
-        ) : !movies ? (
+
+        {shouldSearch ? (
+          searchResults.isSearching ? (
+            <Skeleton />
+          ) : searchResults.searchResult?.results.length === 0 ? (
+            <p>No results found</p>
+          ) : (
+            <MoviesCard movies={searchResults.searchResult?.results ?? []} />
+          )
+        ) : isFetching || !movies ? (
           <Skeleton />
         ) : (
-          <MoviesCard movies={movies?.results} />
+          <MoviesCard movies={movies.results} />
         )}
       </div>
+
       <div className="w-full flex pt-5 items-center justify-center">
         <Pagination activePage={activePage} setActivePage={setActivePage} />
       </div>
@@ -69,7 +61,6 @@ const MoviesLayout = () => {
 };
 
 export default MoviesLayout;
-
 type PaginationProps = {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;

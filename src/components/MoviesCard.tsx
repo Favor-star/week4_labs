@@ -1,6 +1,7 @@
 import type { Result } from "..";
 import Placeholder from "../assets/img-placeholder.png";
 import { useState } from "react";
+import cn from "../utils";
 
 const MoviesCard = ({ movies }: { movies: Result[] }) => {
   return (
@@ -33,7 +34,7 @@ const SingleCard = ({ movie }: { movie: Result }) => {
       <div className="w-full flex flex-col gap-1  font-mono">
         <img
           src={imageUrl}
-          alt={""}
+          alt={primaryImage?.caption?.plainText}
           className="aspect-[226/300] object-cover w-full rounded-lg"
           loading="lazy"
         />
@@ -43,10 +44,10 @@ const SingleCard = ({ movie }: { movie: Result }) => {
         <p className="italic text base text-gray-300">{releaseYear?.year}</p>
       </div>
       <div
-        className={
-          "transition-all h-full w-full p-3 origin-left absolute left-full top-0 bg-secondary/90 " +
-          (open ? " -translate-x-full" : "translate-x-0")
-        }
+        className={cn(
+          "transition-all h-full w-full p-3 origin-left absolute left-full top-0 bg-secondary/90 ",
+          open ? " -translate-x-full" : "translate-x-0"
+        )}
       >
         <p className="text-xs text-wrap text-white/60">
           Title:{" "}
@@ -66,11 +67,11 @@ const SingleCard = ({ movie }: { movie: Result }) => {
         <p className="text-xs text-nowrap text-white/60">
           Genre:{" "}
           <span className="font-bold font-mono text-base text-white">
-            {genres?.genres.map((a) => (
+            {genres?.genres.map((genre) => (
               <span
                 className="text-wrap w-full"
-                key={a.id}
-              >{`${a.text}, `}</span>
+                key={genre.id}
+              >{`${genre.text}, `}</span>
             ))}
           </span>
         </p>
