@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import type {  Response,  OptionsType,  GetMoviesProps } from "../index";
+import { type Response,  type GetMoviesProps } from "../index";
+import { options } from "../config";
 import { ActiveTab } from "../contexts/GrobalContexts";
 function useGetMovies({
   activePage,
@@ -36,10 +37,3 @@ function useGetMovies({
 
 export { useGetMovies };
 
-export const options: OptionsType = {
-  method: "GET",
-  headers: {
-    "x-rapidapi-key": import.meta.env.VITE_API_KEY as string,
-    "x-rapidapi-host": "moviesdatabase.p.rapidapi.com",
-  },
-};

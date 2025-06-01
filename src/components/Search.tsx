@@ -1,34 +1,43 @@
 import { SearchIcon } from "lucide-react";
-import { useContext, useRef, type BaseSyntheticEvent } from "react";
-import { SearchContext } from "../contexts/GrobalContexts";
-
+import { useRef, useCallback } from "react";
+import { useAppDispatch } from "../hooks/hooks";
+import {
+  searchMovies,
+  setIsSearching,
+  setSearchTerm,
+} from "../redux/moviesSlice";
 const Search = () => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const context = useContext(SearchContext);
+  const dispatch = useAppDispatch();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(0);
+  const debouncedHandleSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        if (e.target.value === "") {
+          dispatch(setIsSearching(false));
+          dispatch(setSearchTerm(""));
+          return;
+        }
+        dispatch(setIsSearching(true));
+        dispatch(setSearchTerm(e.target.value));
+        dispatch(searchMovies());
+      }, 500);
+    },
+    [dispatch]
+  );
 
-  const handleSearchSubmit = (e: BaseSyntheticEvent) => {
-    e.preventDefault();
-    if (inputRef.current?.value) {
-      context?.setSearchTerm(inputRef.current.value);
-    }
-  };
   return (
-    <div className="w-full mt-5">
-      <form
-        className="flex flex-row w-fit border border-white items-center justify-center rounded-xl"
-        onSubmit={handleSearchSubmit}
-      >
-        <SearchIcon strokeWidth={1} className="w-10 h-10 p-2" />
-        <input
-          type="text"
-          name="searchbar"
-          id="search"
-          className="p-2 outline-none w-full "
-          placeholder="search by title"
-          ref={inputRef}
-        />
-      </form>
-    </div>
+    <fieldset className=" hidden  w-full max-w-[300px] border-2 rounded-lg border-white/30 transition-all focus-within:border-white  sm:flex  items-center justify-between px-1">
+      <input
+        placeholder="Type to search"
+        className="py-2  outline-none border-none bg-none w-full max-w-fit"
+        id="search"
+        type="text"
+        name="searchbar"
+        onInput={debouncedHandleSearch}
+      />
+      <SearchIcon size={20} strokeWidth={1.5} />
+    </fieldset>
   );
 };
 
