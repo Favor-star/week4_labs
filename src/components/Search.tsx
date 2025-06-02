@@ -1,34 +1,60 @@
 import { SearchIcon } from "lucide-react";
-import { useContext, useRef, type BaseSyntheticEvent } from "react";
-import { SearchContext } from "../contexts/GrobalContexts";
+import { useRef, useCallback, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import {
+  searchMovies,
+  setIsSearching,
+  setSearchResult,
+  setSearchTerm,
+} from "../redux/moviesSlice";
 
-const Search = () => {
+import cn from "../utils";
+const Search = ({ atWatchlist }: { atWatchlist: boolean }) => {
+  const dispatch = useAppDispatch();
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const context = useContext(SearchContext);
-
-  const handleSearchSubmit = (e: BaseSyntheticEvent) => {
-    e.preventDefault();
-    if (inputRef.current?.value) {
-      context?.setSearchTerm(inputRef.current.value);
+  const { searchTerm } = useAppSelector((state) => state.movies);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(0);
+  const debouncedHandleSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        if (e.target.value === "") {
+          dispatch(setIsSearching(false));
+          dispatch(setSearchTerm(""));
+          dispatch(setSearchResult([]));
+          return;
+        }
+        dispatch(setIsSearching(true));
+        dispatch(setSearchTerm(e.target.value));
+        dispatch(searchMovies());
+      }, 500);
+    },
+    [dispatch]
+  );
+  useEffect(() => {
+    if (searchTerm !== "") {
+      inputRef.current && (inputRef.current.value = searchTerm);
     }
-  };
+  }, []);
+
   return (
-    <div className="w-full mt-5">
-      <form
-        className="flex flex-row w-fit border border-white items-center justify-center rounded-xl"
-        onSubmit={handleSearchSubmit}
-      >
-        <SearchIcon strokeWidth={1} className="w-10 h-10 p-2" />
-        <input
-          type="text"
-          name="searchbar"
-          id="search"
-          className="p-2 outline-none w-full "
-          placeholder="search by title"
-          ref={inputRef}
-        />
-      </form>
-    </div>
+    <fieldset
+      className={cn(
+        " hidden  w-full max-w-[300px] border-2 rounded-lg border-white/30 transition-all focus-within:border-white  sm:flex  items-center justify-between px-1",
+        atWatchlist && "invisible"
+      )}
+    >
+      <input
+        placeholder="Type to search"
+        className="py-2  outline-none border-none bg-none w-full max-w-fit"
+        id="search"
+        type="text"
+        name="searchbar"
+        ref={inputRef}
+        onInput={debouncedHandleSearch}
+      />
+      <SearchIcon size={20} strokeWidth={1.5} />
+    </fieldset>
   );
 };
 

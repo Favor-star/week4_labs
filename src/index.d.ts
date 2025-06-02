@@ -62,3 +62,6 @@ export type GetMoviesProps = {
   activePage: number;
   genre?: string;
 };
+export type GenresResult = {
+  results: string[];
+};

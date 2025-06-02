@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { options } from "./useGetMovies";
+import { options } from "../config";
 import type { Response } from "..";
 
 function useSearchMovies(searchTerm: string) {
   const [isSearching, setIsSearching] = useState<boolean>(true);
   const [searchResult, setSearchResult] = useState<Response | null>(null);
   const [error, setError] = useState<string | null>(null);
+  
   useEffect(() => {
     (async function () {
       if (searchTerm === "") {
