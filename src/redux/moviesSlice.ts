@@ -84,7 +84,11 @@ const getMovieById = createAsyncThunk<
     const state = getState();
     const { movies } = state.movies;
     const matchingMovie = movies.find((movie) => movie.id === id);
-    if (matchingMovie) return matchingMovie;
+
+    if (matchingMovie) {
+      console.log("Match found", matchingMovie);
+      return matchingMovie;
+    }
     const response = await fetch(url, options);
     const result = await response.json();
     return result.results as Result;
@@ -117,6 +121,9 @@ const moviesSlice = createSlice({
     },
     setIsSearching: (state, action: PayloadAction<boolean>) => {
       state.isSearching = action.payload;
+    },
+    setSearchResult: (state, action: PayloadAction<Result[]>) => {
+      state.searchResult = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -179,6 +186,7 @@ export const {
   setGenre,
   setIsSearching,
   setIsFetchingMovies,
+  setSearchResult
 } = moviesSlice.actions;
 
 export default moviesSlice.reducer;

@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import Layout from "./components/layout/Layout";
 import MoviesCard from "./components/MoviesCard";
 import SingleMovie from "./components/layout/SingleMovie";
+import Watchlist from "./components/Watchlist";
 
 function AppRouter() {
   const router = createBrowserRouter([
@@ -18,11 +19,12 @@ function AppRouter() {
           element: <MoviesCard />,
         },
         {
-          path: "/movie/:id",
+          path: "movie/:id",
           element: <SingleMovie />,
         },
         {
           path: "watchlist",
+          element: <Watchlist />,
         },
       ],
     },

@@ -1,19 +1,43 @@
 import type { Result } from "..";
 import Placeholder from "../assets/img-placeholder.png";
-import { useState } from "react";
-import {  useAppSelector } from "../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import Skeleton from "./layout/Skeleton";
-import { ListPlusIcon, MoveRightIcon } from "lucide-react";
-import { useNavigate, useSearchParams } from "react-router";
+import {
+  ListCheckIcon,
+  ListPlusIcon,
+  MoveRightIcon,
+  XIcon,
+} from "lucide-react";
+import { useLocation, useNavigate } from "react-router";
+import {
+  addToWatchlist,
+  addwatchlistId,
+  removeFromWatchlist,
+} from "../redux/watchlistSlice";
+import cn from "../utils";
+import { useEffect, useState } from "react";
 
 const MoviesCard = () => {
-  const { movies, isFetchingMovies } = useAppSelector((state) => state.movies);
+  const { movies, isFetchingMovies, isSearching, searchResult, searchTerm } =
+    useAppSelector((state) => state.movies);
+
   if (isFetchingMovies) return <Skeleton />;
+  if (isSearching) return <Skeleton />;
+  if (searchTerm !== "" && searchResult && searchResult.length === 0)
+    return <h1>No result found for {searchTerm}</h1>;
   return (
     <div className="w-full grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5  gap-5 ">
       {/* {isFetchingMovies && <Skeleton />} */}
-      {movies &&
+
+      {(!searchResult || searchResult.length === 0) &&
+        movies &&
         movies.map((movie) => (
+          <SingleCard movie={movie} key={movie._id} id={movie.id} />
+        ))}
+
+      {searchResult &&
+        searchResult?.length !== 0 &&
+        searchResult.map((movie) => (
           <SingleCard movie={movie} key={movie._id} id={movie.id} />
         ))}
     </div>
@@ -22,27 +46,40 @@ const MoviesCard = () => {
 
 export default MoviesCard;
 
-const SingleCard = ({ movie, id }: { movie: Result; id: string }) => {
-  const [open, setOpen] = useState(false);
-  const { primaryImage, originalTitleText, releaseYear } = movie;
-  const imageUrl = primaryImage?.url || Placeholder;
+export const SingleCard = ({ movie, id }: { movie: Result; id: string }) => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isOnWatchlist, setIsOnWatchlist] = useState<boolean>(false);
+  const { primaryImage, originalTitleText, releaseYear } = movie;
+  const { watchlistIds } = useAppSelector(
+    (state) => state.watchlist
+  );
+  const imageUrl = primaryImage?.url || Placeholder;
   const handleNavigate = () => {
     navigate(`/movie/${id}`);
   };
+  const handleAddToWatchlist = () => {
+    if (watchlistIds.includes(id)) return;
+    dispatch(addToWatchlist(movie));
+    dispatch(addwatchlistId(id));
+  };
+  const handleRemoveFromWatchlist = () => {
+    dispatch(removeFromWatchlist(id));
+  };
+  useEffect(() => {
+    if (location.pathname === "/watchlist") setIsOnWatchlist(true);
+  }, [location.pathname]);
+
   return (
-    <div
-      className="w-full max-w-[225px] flex flex-row  border border-gray-500 hover:border-white hover:rounded-2xl p-2 rounded-xl relative  overflow-hidden"
-      onClick={handleNavigate}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <div className="w-full flex flex-col gap-1  font-mono ">
+    <div className="w-full max-w-[225px] flex flex-row  border border-gray-500 hover:border-white hover:rounded-2xl p-2 rounded-xl relative  overflow-hidden">
+      <div className="w-full flex flex-col gap-1  font-mono relative">
         <img
           src={imageUrl}
           alt={primaryImage?.caption?.plainText}
           className="aspect-[226/300] object-cover w-full rounded-lg"
           loading="lazy"
+          onClick={handleNavigate}
         />
         <p className="text-ellipsis text-nowrap w-full text-lg font-bold overflow-hidden ">
           {originalTitleText?.text}
@@ -51,14 +88,28 @@ const SingleCard = ({ movie, id }: { movie: Result; id: string }) => {
           <p className="italic text base text-gray-300">{releaseYear?.year}</p>
           <div className="flex gap-2 justify-start items-center">
             <div
-              className=" p-1 rounded-sm border border-white/40 hover:bg-white/30 hover:border-white hover:rounded-full transition-all"
-              title="Add to watchlist"
+              className={cn(
+                " p-1 rounded-sm border border-white/40 hover:bg-white/30 hover:border-white hover:rounded-full transition-all",
+                watchlistIds.includes(id) &&
+                  "text-secondary bg-white hover:bg-white"
+              )}
+              title={
+                watchlistIds.includes(id)
+                  ? "Added to watchlist"
+                  : "Add to watchlist"
+              }
+              onClick={handleAddToWatchlist}
             >
-              <ListPlusIcon size={20} strokeWidth={1.5} />
+              {watchlistIds.includes(id) ? (
+                <ListCheckIcon size={20} strokeWidth={1.5} />
+              ) : (
+                <ListPlusIcon size={20} strokeWidth={1.5} />
+              )}
             </div>
             <div
               className=" p-1 rounded-sm border border-white/40 hover:bg-white/30 hover:border-white hover:rounded-full transition-all "
-              title="Add to watchlist"
+              title="View"
+              onClick={handleNavigate}
             >
               <MoveRightIcon
                 size={20}
@@ -68,6 +119,15 @@ const SingleCard = ({ movie, id }: { movie: Result; id: string }) => {
             </div>
           </div>
         </div>
+        {isOnWatchlist && (
+          <span
+            className="p-2 flex gap-2 rounded-sm hover:rounded-full bg-white/30 hover:bg-white border border-white/90 hover:text-secondary transition-all cursor-pointer"
+            onClick={handleRemoveFromWatchlist}
+          >
+            <XIcon strokeWidth={1.5} />
+            Remove
+          </span>
+        )}
       </div>
       {/* <div
         className={cn(

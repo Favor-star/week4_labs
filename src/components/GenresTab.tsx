@@ -37,6 +37,7 @@ const GenresTabItem = ({ genre }: { genre: string }) => {
     result?.setActiveTab(genre);
     dispatch(setGenre(genre));
     setSearchParam({ genre });
+    searchParam;
   }
 
   return (

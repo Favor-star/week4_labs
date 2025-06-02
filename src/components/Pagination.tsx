@@ -1,14 +1,20 @@
 import { setCurrentPage } from "../redux/moviesSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect } from "react";
 
 const Pagination = () => {
   const dispatch = useAppDispatch();
   const handlePrev = () => dispatch(setCurrentPage(currentPage - 1));
   const handleNext = () => dispatch(setCurrentPage(currentPage + 1));
   const currentPage = useAppSelector((state) => state.movies.currentPage);
+  useEffect(() => {
+    (function () {
+      window.scrollTo(0, 0);
+    })();
+  }, [currentPage]);
   return (
-    <div className="flex max-w-fit items-center justify-center gap-1">
+    <div className="flex max-w-fit items-center justify-center gap-1 text-white">
       <ChevronLeft
         strokeWidth={2}
         className={
