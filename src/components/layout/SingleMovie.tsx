@@ -45,13 +45,13 @@ const SingleMovie = () => {
         <h1 className="uppercase">Favor's movie App</h1>
         <Link
           to="/"
-          className="flex items-center justify-center w-fit gap-2 p-2 rounded-lg border border-white/30 hover:border-white bg-white/30 "
+          className="flex items-center justify-center w-fit gap-2 p-2 rounded-lg border border-white/30 dark:border-primary/30 hover:border-white dark:hover:border-secondary bg-white/30 dark:bg-secondary/30"
         >
           <MoveLeft size={20} strokeWidth={1.5} />
           <span>Go back</span>
         </Link>
       </header>
-      <div className="flex w-full border-b-2 border-white  p-3">
+      <div className="flex w-full border-b-2 border-white dark:border-primary  p-3">
         <p className="font-bold text-3xl capitalize mt-16">
           {singleMovie?.titleText.text}
         </p>
@@ -90,7 +90,7 @@ const SingleMovie = () => {
       <div className="w-full flex justify-center items-center">
         <Link
           to="/"
-          className="flex items-center justify-center w-fit gap-2 p-2 rounded-lg border border-white/30 hover:border-white bg-white/30 "
+          className="flex items-center justify-center w-fit gap-2 p-2 rounded-lg border border-white/30 dark:border-secondary/30 hover:border-white dark:hover:border-secondary bg-white/30 dark:bg-secondary/30 "
         >
           <MoveLeft size={20} strokeWidth={1.5} />
           <span className="">Go back</span>

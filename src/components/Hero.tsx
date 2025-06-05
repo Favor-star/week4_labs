@@ -1,18 +1,30 @@
 import { NavLink } from "react-router";
 import Search from "./Search";
-import { MenuIcon, } from "lucide-react";
+import { useEffect } from "react";
+import { MenuIcon, MoonIcon, SunDimIcon, SunIcon } from "lucide-react";
 import GenresTab from "./GenresTab";
 import cn from "../utils";
+import { useTheme } from "../contexts/GrobalContexts";
 const Hero = ({ atWatchlist = false }: { atWatchlist: boolean }) => {
+  const { theme, toggleTheme } = useTheme();
+  useEffect(() => {
+    console.log(theme);
+  }, [theme]);
+  function handleToggleTheme() {
+    toggleTheme();
+  }
   return (
-    <div className="w-full  py flex-row text-white  font-mono relative">
+    <div className="w-full  py flex-row text-white dark:text-primary font-mono relative mt-4">
       <header className="w-full   flex justify-between items-center">
         <h1 className="uppercase text-lg ">Favor's Movie App</h1>
         <nav className="sm:flex flex-row gap-3 hidden">
           <NavLink
             to="/"
             className={({ isActive }) =>
-              cn("text-white/60", isActive && "underline font-bold text-white")
+              cn(
+                "text-white/60 dark:text-primary/60",
+                isActive && "underline font-bold text-white dark:text-primary"
+              )
             }
           >
             Home
@@ -20,14 +32,34 @@ const Hero = ({ atWatchlist = false }: { atWatchlist: boolean }) => {
           <NavLink
             to="/watchlist"
             className={({ isActive }) =>
-              cn("text-white/60", isActive && "underline font-bold text-white")
+              cn(
+                "text-white/60 dark:text-primary/60",
+                isActive && "underline font-bold text-white dark:text-primary"
+              )
             }
           >
             {" "}
             Watchlist
           </NavLink>
         </nav>
-        {<Search atWatchlist={atWatchlist} />}
+        <div className="flex gap-2 items-center justify-center">
+          {<Search atWatchlist={atWatchlist} />}
+          <span
+            className={cn(
+              "p-1 flex items-center justify-center   aspect-square cursor-pointer rounded-sm transition-all",
+              theme !== "dark"
+                ? " text-white  hover:bg-white/30"
+                : "text-secondary hover:bg-secondary/30"
+            )}
+            onClick={handleToggleTheme}
+          >
+            {theme === "dark" ? (
+              <MoonIcon size={24} className="text-inherit" />
+            ) : (
+              <SunIcon size={24} className="text-inherit" />
+            )}
+          </span>
+        </div>
         <div className="block sm:hidden">
           <MenuIcon />
         </div>

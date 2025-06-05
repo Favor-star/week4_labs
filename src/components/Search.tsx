@@ -40,7 +40,7 @@ const Search = ({ atWatchlist }: { atWatchlist: boolean }) => {
   return (
     <fieldset
       className={cn(
-        " hidden  w-full max-w-[300px] border-2 rounded-lg border-white/30 transition-all focus-within:border-white  sm:flex  items-center justify-between px-1",
+        " hidden  w-full max-w-[300px] border-2 rounded-lg border-white/30  dark:border-primary/30 transition-all focus-within:border-white dark:focus-within:border-primary  sm:flex  items-center justify-between px-1",
         atWatchlist && "invisible"
       )}
     >

@@ -3,7 +3,7 @@ import {
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import type { Result, Response } from "..";
+import { type Result, type Response, type GenresResult } from "..";
 import type { RootState } from "./store";
 import { options } from "../config";
 type moviesInitialStateProps = {
@@ -12,13 +12,14 @@ type moviesInitialStateProps = {
   searchTerm: string;
   currentPage: number;
   genre: string;
-  allGenres: string[];
+  allGenres: GenresResult | null;
   isFetchingMovies: boolean;
   isSearching: boolean;
   searchResult: null | Result[];
   singleMovie: null | Result;
   isFetchingError: boolean;
-  areGenresFetched: boolean;
+  areGenresFetching: boolean;
+  isFetchingGenreError: boolean;
 };
 
 const initialState: moviesInitialStateProps = {
@@ -29,11 +30,12 @@ const initialState: moviesInitialStateProps = {
   singleMovie: null,
   currentPage: 1,
   genre: "All",
-  allGenres: [],
+  allGenres: null,
   isFetchingMovies: false,
   isSearching: false,
   isFetchingError: false,
-  areGenresFetched: false,
+  areGenresFetching: false,
+  isFetchingGenreError: false,
 };
 
 const fetchMovies = createAsyncThunk<Result[], void, { state: RootState }>(
@@ -94,6 +96,21 @@ const getMovieById = createAsyncThunk<
     return result.results as Result;
   } catch (error) {
     throw error;
+  }
+});
+export const fetchGenres = createAsyncThunk<
+  GenresResult,
+  void,
+  { state: RootState }
+>("movies/fetchGenres", async (_, {}) => {
+  try {
+    const url = `${import.meta.env.VITE_API_URL}/titles/utils/genres`;
+    const response = await fetch(url, options);
+    if (!response.ok) throw new Error("Failed to fetch genres");
+    const result: GenresResult = await response.json();
+    return result;
+  } catch (error) {
+    throw new Error(error as any);
   }
 });
 
@@ -174,6 +191,23 @@ const moviesSlice = createSlice({
         state.isFetchingMovies = true;
         state.isFetchingError = false;
         state.singleMovie = null;
+      })
+      .addCase(fetchGenres.pending, (state) => {
+        state.areGenresFetching = true;
+        state.isFetchingGenreError = false;
+      })
+      .addCase(
+        fetchGenres.fulfilled,
+        (state, action: PayloadAction<GenresResult>) => {
+          state.allGenres = action.payload;
+          state.areGenresFetching = false;
+          state.isFetchingGenreError = false;
+        }
+      )
+      .addCase(fetchGenres.rejected, (state) => {
+        state.areGenresFetching = false;
+        state.isFetchingGenreError = true;
+        state.allGenres = null;
       });
   },
 });
@@ -186,7 +220,7 @@ export const {
   setGenre,
   setIsSearching,
   setIsFetchingMovies,
-  setSearchResult
+  setSearchResult,
 } = moviesSlice.actions;
 
 export default moviesSlice.reducer;
