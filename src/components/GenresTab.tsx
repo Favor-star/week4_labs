@@ -1,5 +1,5 @@
 
-import cn from "../utils";
+import {cn} from "../utils";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { setGenre } from "../redux/moviesSlice";
 import { useSearchParams } from "react-router";

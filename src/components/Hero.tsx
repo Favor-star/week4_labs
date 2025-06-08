@@ -1,9 +1,9 @@
 import { NavLink } from "react-router";
 import Search from "./Search";
 import { useEffect } from "react";
-import { MenuIcon, MoonIcon, SunDimIcon, SunIcon } from "lucide-react";
+import { MenuIcon, MoonIcon, SunIcon } from "lucide-react";
 import GenresTab from "./GenresTab";
-import cn from "../utils";
+import { cn } from "../utils";
 import { useTheme } from "../contexts/GrobalContexts";
 const Hero = ({ atWatchlist = false }: { atWatchlist: boolean }) => {
   const { theme, toggleTheme } = useTheme();

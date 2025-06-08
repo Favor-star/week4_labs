@@ -4,7 +4,6 @@ import Pagination from "../Pagination";
 import Hero from "../Hero";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { fetchGenres, fetchMovies } from "../../redux/moviesSlice";
-// import useDarkMode from "../../hooks/useDarkMode";
 
 const Layout = () => {
   const location = useLocation();
@@ -16,8 +15,9 @@ const Layout = () => {
     dispatch(fetchMovies());
   }, [dispatch, genre, currentPage]);
   useEffect(() => {
-    console.log("Changes");
     dispatch(fetchGenres());
+    // addReviewToFirebase('12');
+    // getReviewsFromFirebase("12");
   }, []);
   return (
     <div className="w-full bg-primary dark:bg-white text-white dark:text-primary flex flex-row items-start justify-center px-4  gap-5 min-h-screen ">

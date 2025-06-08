@@ -8,15 +8,15 @@ import {
   setSearchTerm,
 } from "../redux/moviesSlice";
 
-import cn from "../utils";
+import { cn } from "../utils";
 const Search = ({ atWatchlist }: { atWatchlist: boolean }) => {
   const dispatch = useAppDispatch();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { searchTerm } = useAppSelector((state) => state.movies);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(0);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const debouncedHandleSearch = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      clearTimeout(timeoutRef.current);
+      timeoutRef.current && clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
         if (e.target.value === "") {
           dispatch(setIsSearching(false));

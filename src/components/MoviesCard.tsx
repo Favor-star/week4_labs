@@ -14,7 +14,7 @@ import {
   addwatchlistId,
   removeFromWatchlist,
 } from "../redux/watchlistSlice";
-import cn from "../utils";
+import { cn } from "../utils";
 import { useEffect, useState } from "react";
 
 const MoviesCard = () => {

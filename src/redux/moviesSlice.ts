@@ -3,7 +3,7 @@ import {
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import { type Result, type Response, type GenresResult } from "..";
+import type { Result, Response, GenresResult } from "../index";
 import type { RootState } from "./store";
 import { options } from "../config";
 type moviesInitialStateProps = {

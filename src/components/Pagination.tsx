@@ -2,7 +2,7 @@ import { setCurrentPage } from "../redux/moviesSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect } from "react";
-import cn from "../utils";
+import {cn} from "../utils";
 
 const Pagination = () => {
   const dispatch = useAppDispatch();
