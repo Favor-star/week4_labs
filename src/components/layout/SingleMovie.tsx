@@ -1,11 +1,14 @@
-import { useLocation, useParams } from "react-router";
+import { Await, useLoaderData, useLocation, useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { getMovieById } from "../../redux/moviesSlice";
 import { Link } from "react-router";
 import { Loader2, MoveLeft } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Placeholder from "../../assets/img-placeholder.png";
+import ReviewSection from "../ReviewSection";
+import type { ReviewProps } from "../..";
 const SingleMovie = () => {
+  const reviewData = useLoaderData<ReviewProps[]>();
   const location = useLocation();
   const { id } = useParams();
   const dispatch = useAppDispatch();
@@ -40,27 +43,27 @@ const SingleMovie = () => {
       </div>
     );
   return (
-    <div>
+    <div className="w-full">
       <header className="w-full flex justify-between">
         <h1 className="uppercase">Favor's movie App</h1>
         <Link
           to="/"
-          className="flex items-center justify-center w-fit gap-2 p-2 rounded-lg border border-white/30 hover:border-white bg-white/30 "
+          className="flex items-center justify-center w-fit gap-2 p-2 rounded-lg border border-white/30 dark:border-primary/30 hover:border-white dark:hover:border-secondary bg-white/30 dark:bg-secondary/30"
         >
           <MoveLeft size={20} strokeWidth={1.5} />
           <span>Go back</span>
         </Link>
       </header>
-      <div className="flex w-full border-b-2 border-white  p-3">
+      <div className="flex w-full border-b-2 border-white dark:border-primary  p-3">
         <p className="font-bold text-3xl capitalize mt-16">
           {singleMovie?.titleText.text}
         </p>
       </div>
-      <div className="flex w-full gap-5 p-3 rounded-2xl ">
+      <div className="flex w-full gap-5 p-3 rounded-2xl flex-col md:flex-row  ">
         <img
           src={imageUrl.url}
           alt={imageUrl.caption}
-          className="aspect-[226/300] max-w-[226px] object-cover w-full rounded-lg"
+          className="aspect-[226/300] max-w-[226px] object-cover w-full rounded-lg self-center md:self-start"
         />
         <div className="flex flex-col gap-2 w-full">
           {singleMovie?.genres && (
@@ -87,15 +90,23 @@ const SingleMovie = () => {
           </p>
         </div>
       </div>
-      <div className="w-full flex justify-center items-center">
+      <Suspense fallback={<div>Loading....</div>}>
+        <Await
+          resolve={reviewData}
+          errorElement={<div>Failed to load reviews</div>}
+        >
+          {(reviewData: ReviewProps[]) => <ReviewSection data={reviewData} />}
+        </Await>
+      </Suspense>
+      {/* <footer className="w-full flex justify-center items-center">
         <Link
           to="/"
-          className="flex items-center justify-center w-fit gap-2 p-2 rounded-lg border border-white/30 hover:border-white bg-white/30 "
+          className="flex items-center justify-center w-fit gap-2 p-2 rounded-lg border border-white/30 dark:border-secondary/30 hover:border-white dark:hover:border-secondary bg-white/30 dark:bg-secondary/30 "
         >
           <MoveLeft size={20} strokeWidth={1.5} />
           <span className="">Go back</span>
         </Link>
-      </div>
+      </footer> */}
     </div>
   );
 };

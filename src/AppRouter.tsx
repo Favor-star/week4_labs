@@ -3,6 +3,7 @@ import Layout from "./components/layout/Layout";
 import MoviesCard from "./components/MoviesCard";
 import SingleMovie from "./components/layout/SingleMovie";
 import Watchlist from "./components/Watchlist";
+import { movieReviewLoader } from "./utils";
 
 function AppRouter() {
   const router = createBrowserRouter([
@@ -21,6 +22,7 @@ function AppRouter() {
         {
           path: "movie/:id",
           element: <SingleMovie />,
+          loader: movieReviewLoader,
         },
         {
           path: "watchlist",

@@ -8,15 +8,15 @@ import {
   setSearchTerm,
 } from "../redux/moviesSlice";
 
-import cn from "../utils";
+import { cn } from "../utils";
 const Search = ({ atWatchlist }: { atWatchlist: boolean }) => {
   const dispatch = useAppDispatch();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { searchTerm } = useAppSelector((state) => state.movies);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(0);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const debouncedHandleSearch = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      clearTimeout(timeoutRef.current);
+      timeoutRef.current && clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
         if (e.target.value === "") {
           dispatch(setIsSearching(false));
@@ -40,7 +40,7 @@ const Search = ({ atWatchlist }: { atWatchlist: boolean }) => {
   return (
     <fieldset
       className={cn(
-        " hidden  w-full max-w-[300px] border-2 rounded-lg border-white/30 transition-all focus-within:border-white  sm:flex  items-center justify-between px-1",
+        " hidden  w-full max-w-[300px] border-2 rounded-lg border-white/30  dark:border-primary/30 transition-all focus-within:border-white dark:focus-within:border-primary  sm:flex  items-center justify-between px-1",
         atWatchlist && "invisible"
       )}
     >

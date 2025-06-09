@@ -65,3 +65,11 @@ export type GetMoviesProps = {
 export type GenresResult = {
   results: string[];
 };
+export interface ReviewProps {
+  reviewerName: string;
+  movieId: string;
+  reviewId: string;
+  dateAdded: string;
+  reviewMessage: string;
+  rating: number;
+}

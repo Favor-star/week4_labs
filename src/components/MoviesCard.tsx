@@ -14,7 +14,7 @@ import {
   addwatchlistId,
   removeFromWatchlist,
 } from "../redux/watchlistSlice";
-import cn from "../utils";
+import { cn } from "../utils";
 import { useEffect, useState } from "react";
 
 const MoviesCard = () => {
@@ -52,9 +52,7 @@ export const SingleCard = ({ movie, id }: { movie: Result; id: string }) => {
   const location = useLocation();
   const [isOnWatchlist, setIsOnWatchlist] = useState<boolean>(false);
   const { primaryImage, originalTitleText, releaseYear } = movie;
-  const { watchlistIds } = useAppSelector(
-    (state) => state.watchlist
-  );
+  const { watchlistIds } = useAppSelector((state) => state.watchlist);
   const imageUrl = primaryImage?.url || Placeholder;
   const handleNavigate = () => {
     navigate(`/movie/${id}`);
@@ -72,7 +70,7 @@ export const SingleCard = ({ movie, id }: { movie: Result; id: string }) => {
   }, [location.pathname]);
 
   return (
-    <div className="w-full max-w-[225px] flex flex-row  border border-gray-500 hover:border-white hover:rounded-2xl p-2 rounded-xl relative  overflow-hidden">
+    <div className="w-full max-w-[225px] flex flex-row  border border-gray-500  dark:border-primary/50 dark:hover:bg-secondary/15 transition-all hover:border-white dark:hover:border-primary dark:bg-primary/5 hover:rounded-2xl p-2 rounded-xl relative  overflow-hidden">
       <div className="w-full flex flex-col gap-1  font-mono relative">
         <img
           src={imageUrl}
@@ -85,13 +83,15 @@ export const SingleCard = ({ movie, id }: { movie: Result; id: string }) => {
           {originalTitleText?.text}
         </p>
         <div className="w-full flex flex-row justify-between items-end">
-          <p className="italic text base text-gray-300">{releaseYear?.year}</p>
+          <p className="italic text base text-gray-300 dark:text-primary">
+            {releaseYear?.year}
+          </p>
           <div className="flex gap-2 justify-start items-center">
             <div
               className={cn(
-                " p-1 rounded-sm border border-white/40 hover:bg-white/30 hover:border-white hover:rounded-full transition-all",
+                " p-1 rounded-sm border dark:hover:text-white border-white/40 dark:border-primary/40 hover:bg-white/30 dark:hover:bg-secondary/30 hover:border-white dark:hover:border-secondary hover:rounded-full transition-all",
                 watchlistIds.includes(id) &&
-                  "text-secondary bg-white hover:bg-white"
+                  "text-secondary dark:text-white dark:bg-secondary dark:hover:bg-secondary bg-white hover:bg-white"
               )}
               title={
                 watchlistIds.includes(id)
@@ -107,7 +107,7 @@ export const SingleCard = ({ movie, id }: { movie: Result; id: string }) => {
               )}
             </div>
             <div
-              className=" p-1 rounded-sm border border-white/40 hover:bg-white/30 hover:border-white hover:rounded-full transition-all "
+              className="  p-1 rounded-sm border dark:hover:text-white border-white/40 dark:border-primary/40 hover:bg-white/30 dark:hover:bg-secondary/30 hover:border-white dark:hover:border-secondary hover:rounded-full transition-all"
               title="View"
               onClick={handleNavigate}
             >

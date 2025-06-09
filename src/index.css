@@ -5,6 +5,8 @@
 *::after {
   box-sizing: border-box;
 }
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #1f282d;
   --color-secondary: #065a60;
@@ -13,4 +15,43 @@
 .scrollbar_sidebar {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.099) #065a6000;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 200px; /* Set the width of the input */
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 12px;
+  background: #dddddd5e;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #065a60;
+  border-radius: 1px;
+  transform: translateY(-4.5px);
+  cursor: pointer;
+}
+
+/* Firefox support */
+input[type="range"]::-moz-range-track {
+  height: 5px;
+  background: #ddd;
+  border-radius: 2px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #333;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
 }
